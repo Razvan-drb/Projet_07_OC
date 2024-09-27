@@ -1,8 +1,6 @@
 import csv
 from itertools import combinations
 
-
-# Read the stock data from a CSV file
 def read_stock_data(file_path: str):
     """
         Reads stock data from a CSV file and returns a list of stock dictionaries.
@@ -29,7 +27,7 @@ def read_stock_data(file_path: str):
     return stocks
 
 
-def maximize_profit(stocks, budget):
+def maximize_profit(stocks: list, budget: float) -> tuple:
     """
         Finds the combination of stocks that maximizes profit while staying within the given budget.
         Args:
@@ -43,7 +41,7 @@ def maximize_profit(stocks, budget):
     best_combination = None
     max_profit = 0
 
-    # Try all combinations of stocks and evaluate their profit
+    # do all combinations of stocks and evaluate profit
     for r in range(1, len(stocks) + 1):
         for combo in combinations(stocks, r):
             total_cost = sum(stock['cost'] for stock in combo)
