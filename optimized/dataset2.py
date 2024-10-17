@@ -35,48 +35,48 @@ def knapsack(stocks: list, budget: float):
         tuple: A tuple containing the best combination of stocks (list of dictionaries)
                and the corresponding maximum profit (float).
     """
-    # Convert budget to integer for use in dynamic programming table (knapsack problem)
+
     budget = int(budget)
 
-    # Filter out stocks with zero cost
-    non_zero_cost_stocks = [stock for stock in stocks if stock['cost'] > 0]
+    filtered_stocks = [stock for stock in stocks if stock['cost'] > 0]
 
-    # Create a DP table where dp[i][j] will store the maximum profit for the first i stocks and a budget of j
-    n = len(non_zero_cost_stocks)
-    dp = [[0] * (budget + 1) for _ in range(n + 1)]
+    # Create a dynamic programming table where dp_table[i][available_budget]
+    # store the maximum profit for the first the stocks and budget.
+    num_stocks = len(filtered_stocks)
+    dp_table = [[0] * (budget + 1) for _ in range(num_stocks + 1)]
 
-    # Track which stocks were picked
-    picks = [[[] for _ in range(budget + 1)] for _ in range(n + 1)]
+    stock_selection = [[[] for _ in range(budget + 1)] for _ in range(num_stocks + 1)]
 
-    # Fill the DP table
-    for i in range(1, n + 1):
-        stock = non_zero_cost_stocks[i - 1]
-        cost = int(stock['cost'])
-        profit = stock['profit']
+    # dynamic programming table
+    for stock_index in range(1, num_stocks + 1):
+        current_stock = filtered_stocks[stock_index - 1]
+        current_cost = int(current_stock['cost'])
+        current_profit = current_stock['profit']
 
-        for j in range(budget + 1):
-            # Option 1: Don't take the stock
-            option1 = dp[i - 1][j]
+        for available_budget in range(budget + 1):
+            # Option 1: Don't take the current stock
+            profit_without_stock = dp_table[stock_index - 1][available_budget]
 
-            # Option 2: Take the stock (only if the cost is <= current budget 'j')
-            if cost <= j:  # Ensure we don't try to access negative indices
-                option2 = dp[i - 1][j - cost] + profit
+            # Option 2: Take the stock, if cost allows
+            if current_cost <= available_budget:
+                profit_with_stock = dp_table[stock_index - 1][available_budget - current_cost] + current_profit
             else:
-                option2 = 0  # Invalid option if cost is greater than j
+                profit_with_stock = 0
 
-            # Take the better of the two options
-            if option2 > option1:
-                dp[i][j] = option2
-                picks[i][j] = picks[i - 1][j - cost] + [stock]
+            # Choose the better option between taking the stock or not
+            if profit_with_stock > profit_without_stock:
+                dp_table[stock_index][available_budget] = profit_with_stock
+                stock_selection[stock_index][available_budget] = stock_selection[stock_index - 1][
+                                                                     available_budget - current_cost] + [current_stock]
             else:
-                dp[i][j] = option1
-                picks[i][j] = picks[i - 1][j]
+                dp_table[stock_index][available_budget] = profit_without_stock
+                stock_selection[stock_index][available_budget] = stock_selection[stock_index - 1][available_budget]
 
-    # The maximum profit is found at dp[n][budget]
-    best_combination = picks[n][budget]
-    max_profit = dp[n][budget]
+    # The best combination of stocks and the maximum profit
+    best_stock_combination = stock_selection[num_stocks][budget]
+    max_profit = dp_table[num_stocks][budget]
 
-    return best_combination, max_profit
+    return best_stock_combination, max_profit
 
 
 
@@ -92,7 +92,6 @@ def main():
 
     budget = 500
 
-    # Read stock data from the CSV file
     stocks = read_stock_data("dataset2_Python+P7.csv")
 
     best_combination, max_profit = knapsack(stocks, budget)

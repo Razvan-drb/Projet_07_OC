@@ -37,17 +37,15 @@ def knapsack(stocks: list, budget: float):
         tuple: A tuple containing the best combination of stocks (list of dictionaries)
                and the corresponding maximum profit (float).
     """
-    # Convert budget to integer for use in dynamic programming table (knapsack problem)
+
     budget = int(budget)
 
-    # Create a DP table where dp[i][j] will store the maximum profit for the first i stocks and a budget of j
+    # Create a DP table where dp[i][j] will store the maximum profit
     n = len(stocks)
     dp = [[0] * (budget + 1) for _ in range(n + 1)]
 
-    # Track which stocks were picked
     picks = [[[] for _ in range(budget + 1)] for _ in range(n + 1)]
 
-    # Fill the DP table
     for i in range(1, n + 1):
         stock = stocks[i - 1]
         cost = int(stock['cost'])
@@ -68,11 +66,11 @@ def knapsack(stocks: list, budget: float):
                     dp[i][j] = option1
                     picks[i][j] = picks[i - 1][j]
             else:
-                # If the stock can't be taken, carry forward the previous solution
+                # If the stock can't be taken, use the previous solution
                 dp[i][j] = dp[i - 1][j]
                 picks[i][j] = picks[i - 1][j]
 
-    # The maximum profit is found at dp[n][budget]
+    # The maximum profit
     return picks[n][budget], dp[n][budget]
 
 
@@ -88,7 +86,6 @@ def main():
     # Set the budget to 500 euros
     budget = 500
 
-    # Read stock data from the CSV file
     stocks = read_stock_data("Liste+d'actions+-+P7+Python+-+Feuille+1.csv")
 
     best_combination, max_profit = knapsack(stocks, budget)
