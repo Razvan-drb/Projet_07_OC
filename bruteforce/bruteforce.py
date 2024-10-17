@@ -69,7 +69,7 @@ def main():
     """
 
     budget = 500
-    file_path = "../Liste+d'actions+-+P7+Python+-+Feuille+1.csv"
+    file_path = "Liste+d'actions+-+P7+Python+-+Feuille+1.csv"
 
     stocks = read_stock_data(file_path)
 

@@ -90,11 +90,10 @@ def main():
         None
     """
 
-    budget = 450
+    budget = 500
 
     # Read stock data from the CSV file
-    # stocks = read_stock_data("../dataset2_Python+P7.csv")
-    stocks = read_stock_data("../dataset1_Python+P7.csv")
+    stocks = read_stock_data("dataset2_Python+P7.csv")
 
     best_combination, max_profit = knapsack(stocks, budget)
 
